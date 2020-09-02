@@ -1,4 +1,4 @@
-import os
+import os.path
 import re
 import glob
 
@@ -26,18 +26,22 @@ for filename in path:
 
         slus, numbers, bracketNumber = x
 
-        values = values.replace('-', '_')
         numberMatch = numberRegex.findall( numbers )
         withDot = ".".join(list(numberMatch[0]))
         withDot = withDot + '.'
         afterDot = ".".join(list(bracketNumber[0:1]))
 
+        # formatting
+        values = values.replace('-', '_')
         values = values.replace(numbers, withDot)
         values = values.replace(bracketNumber, afterDot)
-        print (values)
         values = values.replace(' ', '')
+        values = values.replace('"', '')
+        values = values.replace('\'', '')
+        values = values.replace('(', '')
+        values = values.replace(')', '')
         values = values.replace(',', '')
         print (values)
-
+        os.rename(filename, 'Y:\\Games\\PS2\\' + values + '.iso')
         
 
