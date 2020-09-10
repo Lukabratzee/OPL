@@ -1,6 +1,7 @@
 import os.path
 import re
 import glob
+import shutil
 
 # example - SLUS_200.74.Summoner
 
@@ -16,9 +17,12 @@ pathRegex = re.compile(r'(?s:.*)(PS2\\)(.*)')
 path_folder = []
 
 # converts returned result from tuple into str
+
+
 def convert_tuple(tup):
     values = ''.join(map(str, tup))
     return values
+
 
 # searches for filenames
 for filename in path:
@@ -56,5 +60,8 @@ for filename in path:
         values = values.replace(',', '')
 
         preview = values + up_dir + '.iso'
-        print (preview)
+        dest = 'Y:\\Games\\PS2\\' + up_dir
+        # renames file
         os.rename(filename, 'Y:\\Games\\PS2\\' + preview)
+        # moves file
+        shutil.move('Y:\\Games\\PS2\\' + preview, dest)
