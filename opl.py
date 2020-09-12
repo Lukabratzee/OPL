@@ -15,13 +15,38 @@ pathRegex = re.compile(r'(?s:.*)(PS2\\)(.*)')
 
 # 'good practice to declare' - Daddy Halloumi
 path_folder = []
-
+tmp = []
 # converts returned result from tuple into str
 
 
 def convert_tuple(tup):
     values = ''.join(map(str, tup))
     return values
+
+
+def create_filename(tmp):
+    slus, numbers, bracketNumber = x
+    numberMatch = numberRegex.findall(numbers)
+    withDot = ".".join(list(numberMatch[0]))
+    withDot = withDot + '.'
+
+    # formatting vidya name
+    up_dir = "".join(list(tmp[0]))
+    up_dir = up_dir.replace('PS2\\', '')
+    up_dir = up_dir.split('\\', 1)[0]
+
+    return withDot, up_dir
+
+
+def rename_file(withDot, up_dir):
+
+    new_filename = "SLUS_{}{}.iso".format(withDot, up_dir)
+
+    dest = 'Y:\\Games\\PS2\\' + up_dir
+    # renames file
+    os.rename(filename, 'Y:\\Games\\PS2\\' + new_filename)
+    # moves file
+    shutil.move('Y:\\Games\\PS2\\' + new_filename, dest)
 
 
 # searches for filenames
@@ -38,30 +63,5 @@ for filename in path:
         # finds last instance of \\ to read parent dir
         tmp = pathRegex.findall(tmp)
 
-        slus, numbers, bracketNumber = x
-        numberMatch = numberRegex.findall(numbers)
-        withDot = ".".join(list(numberMatch[0]))
-        withDot = withDot + '.'
-
-        # formatting vidya name
-        up_dir = "".join(list(tmp[0]))
-        up_dir = up_dir.replace('PS2\\', '')
-        up_dir = up_dir.split('\\', 1)[0]
-
-        # formatting ID (don't know how to do this cleaner)
-        values = values.replace('-', '_')
-        values = values.replace(numbers, withDot)
-        values = values.replace(bracketNumber, '')
-        values = values.replace(' ', '')
-        values = values.replace('"', '')
-        values = values.replace('\'', '')
-        values = values.replace('(', '')
-        values = values.replace(')', '')
-        values = values.replace(',', '')
-
-        preview = values + up_dir + '.iso'
-        dest = 'Y:\\Games\\PS2\\' + up_dir
-        # renames file
-        os.rename(filename, 'Y:\\Games\\PS2\\' + preview)
-        # moves file
-        shutil.move('Y:\\Games\\PS2\\' + preview, dest)
+        withDot, up_dir = create_filename(tmp)
+        rename_file(withDot, up_dir)
